@@ -1,5 +1,7 @@
 <?php
 
+use OpenSpout\Reader\CSV\Reader;
+
 add_action('init', __NAMESPACE__ . '\\register_post_type_event', 10);
 add_action('init', __NAMESPACE__ . '\\register_post_type_registration', 10);
 
@@ -41,7 +43,7 @@ function register_post_type_event()
                     echo "&mdash;";
                     return;
                 }
-                echo $event_date . ' ' . $event_time;
+                echo "<form>".$event_date . ' ' . $event_time."</form>";
             }],
             'registrations' => ['title' => 'Registrations', 'sortable' => false, 'function' => function () {
                 global $post;
@@ -49,6 +51,18 @@ function register_post_type_event()
                 $sql_query = $wpdb->prepare("SELECT COUNT(`post_id`) as count FROM %i WHERE `meta_key` = 'registration_event_id' AND `meta_value` = %d", $wpdb->postmeta, $post_id);
                 $result = $wpdb->get_row($sql_query, ARRAY_A);
                 echo $result['count'];
+            }],
+            'export' => ['title' => 'Export', 'sortable' => false, 'function' => function () {
+                global $post;
+
+                echo "<div>
+                        <form action='".esc_attr('admin-post.php')."' method='post'>
+                            ".wp_nonce_field('export_attendees')."
+                            <input type='hidden' name='action' value='export_attendees' />
+                            <input type='hidden' name='post_id' value='".$post->ID."' />
+                            <input type='submit' value='Export'>
+                        </form>
+                    <div>";
             }],
         ],
         'admin_filters'        => [],

@@ -43,7 +43,7 @@ function register_post_type_event()
                     echo "&mdash;";
                     return;
                 }
-                echo "<form>".$event_date . ' ' . $event_time."</form>";
+                echo $event_date . ' ' . $event_time;
             }],
             'registrations' => ['title' => 'Registrations', 'sortable' => false, 'function' => function () {
                 global $post;
